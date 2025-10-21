@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const getStoredLinks = () => {
   const stored = localStorage.getItem('shortenUrl');
@@ -26,14 +27,14 @@ const Shortener = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/shortenUrl');
-      const data = await response.json();
+      const response = await axios.get(`https://is.gd/create.php?format=json&url=${encodeURIComponent(url)}`);
+      const data = response.data;
 
-      if (data.ok) {
+      if (data.shorturl) {
         setShortenedLinks([
           {
             original: url,
-            shortened: data.result.full_short_link,
+            shortened: data.shorturl,
             copied: false,
           },
           ...shortenedLinks,
